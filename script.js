@@ -9,57 +9,58 @@ function getComputerChoice() {
   }
 }
 
-function getHumanChoice() {
+/*function getHumanChoice() {
   const userInput = prompt(
     "Allez y pierre, papier ou ciseau a vous la baguette :"
   );
   return userInput.toLowerCase();
-}
+}*/
 
 var humanScore = 0;
 var computerScore = 0;
+//const humanSelection = getHumanChoice();
+const computerSelection = getComputerChoice();
 
 function playRound(humanChoice, computerChoice) {
   humanChoice = humanChoice.toLowerCase();
-  if (humanChoice == computerChoice) {
-    console.log("Egalite");
-  } else if (
-    (humanChoice == "pierre" && computerChoice == "ciseaux") ||
-    (humanChoice == "ciseau" && computerChoice == "papier") ||
-    (humanChoice == "papier" && computerChoice == "pierre")
-  ) {
-    console.log(`Vous gagnez ${humanChoice} bat ${computerChoice}`);
-    return humanScore++;
+  let div = document.querySelector("#resultat");
+  let para = document.createElement("p");
+
+  div.appendChild(para);
+  if (humanScore != 5 && computerScore != 5) {
+    if (humanChoice == computerChoice) {
+      para.textContent = "Egalite";
+    } else if (
+      (humanChoice == "pierre" && computerChoice == "ciseau") ||
+      (humanChoice == "ciseau" && computerChoice == "papier") ||
+      (humanChoice == "papier" && computerChoice == "pierre")
+    ) {
+      humanScore++;
+      para.textContent = `Vous gagnez ${humanChoice} bat ${computerChoice} score : ${humanScore} vs ${computerScore}`;
+    } else {
+      computerScore++;
+      para.textContent = `Vous perdez ! ${computerChoice} bat ${humanChoice}  score : ${humanScore} vs ${computerScore}`;
+    }
   } else {
-    console.log(`Vous perdez ! ${computerChoice} bat ${humanChoice}`);
-    return computerScore++;
+    if (humanScore == 5) {
+      para.textContent += `Felicitation vous etes le premier a arriver a 5 score TOTAL: ${humanScore} vs ${computerScore}`;
+    } else if (computerScore == 5) {
+      para.textContent += `Vous perdez ! vs l'ordinateur score : ${humanScore} vs ${computerScore}`;
+    }
   }
 }
 
-function playGame() {
-  humanScore = 0;
-  computerScore = 0;
-  for (let i = 1; i <= 5; i++) {
-    console.log(`---Manche ${i}`);
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
+let btns = document.querySelector("#btns");
+let resetButton = document.querySelector("#reset");
+btns.addEventListener("click", (e) => {
+  let humanChoice = e.target.id;
+  let computerSelection = getComputerChoice();
 
-    playRound(humanSelection, computerSelection);
-  }
+  playRound(humanChoice, computerSelection);
+});
 
-  console.log("--Resultat final");
-
-  if (humanScore > computerScore) {
-    console.log(
-      `Vous remporter la partie avec ${humanScore} contre ${computerScore}`
-    );
-  } else if (humanScore < computerScore) {
-    console.log(
-      `Vous avez perdu la partie avec ${computerScore} contre ${humanScore}`
-    );
-  } else {
-    console.log(`Match nul`);
-  }
-}
-
-playGame();
+resetButton.addEventListener("click", (e) => {
+  let div = document.querySelector("#resultat");
+  e.stopPropagation();
+  location.reload();
+});
